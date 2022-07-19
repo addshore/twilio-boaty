@@ -84,7 +84,7 @@ exports.work = async (context, messageIn) => {
     if ( !d ) {
       return "openweather requested, but no coordiates provided"
     } else {
-          // https://openweathermap.org/api/one-call-api
+    // https://openweathermap.org/api/one-call-api
     const weatherResponse = await axios
       .get("https://api.openweathermap.org/data/2.5/onecall?lat=" + d.lat + "&lon=" + d.lon + "&appid=" + context.OPENWEATHERMAP_KEY)
       .catch((error) => {
@@ -105,9 +105,47 @@ exports.work = async (context, messageIn) => {
           return msg
         }
       } else if ( messageIn.startsWith('openweather sun') ) {
-        let sunrise = new Date(weatherResponse.data.current.sunrise);
-        let sunset = new Date(weatherResponse.data.current.sunset);
-        return "Sunrise: " + sunrise.toString() + ", Sunset: " + sunset.toString()
+        var todaySunrise = new Date(0);
+        todaySunrise.setUTCSeconds(weatherResponse.data.daily[0].sunrise);
+        let todaySunset = new Date(0);
+        todaySunset.setUTCSeconds(weatherResponse.data.daily[0].sunset);
+
+        var todayMoonrise = new Date(0);
+        todayMoonrise.setUTCSeconds(weatherResponse.data.daily[0].moonrise);
+        let todayMoonset = new Date(0);
+        todayMoonset.setUTCSeconds(weatherResponse.data.daily[0].moonset);
+
+        var tomorrowSunrise = new Date(0);
+        tomorrowSunrise.setUTCSeconds(weatherResponse.data.daily[1].sunrise);
+        let tomorrowSunset = new Date(0);
+        tomorrowSunset.setUTCSeconds(weatherResponse.data.daily[1].sunset);
+
+        var tomorrowMoonrise = new Date(0);
+        tomorrowMoonrise.setUTCSeconds(weatherResponse.data.daily[1].moonrise);
+        let tomorrowMoonset = new Date(0);
+        tomorrowMoonset.setUTCSeconds(weatherResponse.data.daily[1].moonset);
+
+        let timeOptions = {
+          timeZone: weatherResponse.data.timezone,
+          hour12: false,
+          hour: '2-digit',
+          minute:'2-digit'
+        }
+
+        let dateOptions = {
+          timeZone: weatherResponse.data.timezone,
+          day: 'numeric',
+          month: 'short'
+        }
+
+        return todaySunrise.toLocaleDateString("en-US", dateOptions) + " (today): " +
+          "Sun: " + todaySunrise.toLocaleTimeString("en-US", timeOptions) + " -> " + todaySunset.toLocaleTimeString("en-US", timeOptions) +
+          ", Moon (phase " + weatherResponse.data.daily[0].moon_phase + "): " + todayMoonrise.toLocaleTimeString("en-US", timeOptions) + " -> " + todayMoonset.toLocaleTimeString("en-US", timeOptions) +
+          "\n" +
+          tomorrowSunrise.toLocaleDateString("en-US", dateOptions) + ": " +
+          "Sun: " + tomorrowSunrise.toLocaleTimeString("en-US", timeOptions) + " -> " + tomorrowSunset.toLocaleTimeString("en-US", timeOptions) +
+          ", Moon (phase " + weatherResponse.data.daily[0].moon_phase + "): " + tomorrowMoonrise.toLocaleTimeString("en-US", timeOptions) + " -> " + tomorrowMoonset.toLocaleTimeString("en-US", timeOptions);
+
       }
     }
     }
