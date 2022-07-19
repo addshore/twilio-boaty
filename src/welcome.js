@@ -2,21 +2,29 @@ const axios = require('axios');
 
 exports.handler = async (context, event, callback) => {
   const twiml = new Twilio.twiml.MessagingResponse();
-  const incomingMessage = event.Body.toLowerCase();
 
-  const debug = incomingMessage.includes('debug')
+  twiml.message(await exports.work(context, event.Body.toLowerCase()))
+
+  // Return the TwiML as the second argument to `callback`
+  // This will render the response as XML in reply to the webhook request
+  return callback(null, twiml);
+};
+
+
+exports.work = async (context, messageIn) => {
+  const debug = messageIn.includes('debug')
   if (debug) {
-    console.log(JSON.stringify(incomingMessage))
+    console.log(JSON.stringify(messageIn))
   }
 
-  const hasInreachLink = incomingMessage.includes('inreachlink.com')
+  const hasInreachLink = messageIn.includes('inreachlink.com')
 
   //////////////////////////////////////////////////////////
   // Extract data from an inreach link if it exists...
   //////////////////////////////////////////////////////////
   var d = false;
   if (hasInreachLink) {
-    var url = incomingMessage.match(/(inreachlink.com[^ ]*)/)[1];
+    var url = messageIn.match(/(inreachlink.com[^ ]*)/)[1];
     if (debug) {
       console.log(url)
     }
@@ -60,21 +68,21 @@ exports.handler = async (context, event, callback) => {
   //////////////////////////////////////////////////////////
   // Decide on a message to send
   //////////////////////////////////////////////////////////
-  if ( incomingMessage.startsWith('debug') ) {
+  if ( messageIn.startsWith('debug') ) {
     if( hasInreachLink && d ) {
-      twiml.message('Extracted URL: ' + d.url + ', lat: ' + d.lat + ', lon: ' + d.lon + ' from the inreach URL');
+      return 'Extracted URL: ' + d.url + ', lat: ' + d.lat + ', lon: ' + d.lon + ' from the inreach URL'
     } else if ( hasInreachLink ) {
-      twiml.message('No data extracted from URL: ' + url)
+      return 'No data extracted from URL: ' + url
     } else {
-      twiml.message('No inreach link detected')
+      return 'No inreach link detected'
     }
-  } else if ( incomingMessage.startsWith('hello') ) {
-    twiml.message('Hello, there!');
-  } else if ( incomingMessage.startsWith('bye') ) {
-    twiml.message('Goodbye!');
-  } else if ( incomingMessage.startsWith('openweather') ) {
+  } else if ( messageIn.startsWith('hello') ) {
+    return 'Hello, there!';
+  } else if ( messageIn.startsWith('bye') ) {
+    return 'Goodbye!';
+  } else if ( messageIn.startsWith('openweather') ) {
     if ( !d ) {
-      twiml.message("openweather requested, but no coordiates provided")
+      return "openweather requested, but no coordiates provided"
     } else {
           // https://openweathermap.org/api/one-call-api
     const weatherResponse = await axios
@@ -85,29 +93,25 @@ exports.handler = async (context, event, callback) => {
         console.error(error);
       });
     if ( weatherResponse && weatherResponse.data ) {
-      if ( incomingMessage.startsWith('openweather alerts') ) {
+      if ( messageIn.startsWith('openweather alerts') ) {
         if (weatherResponse.data.alerts.length == 0) {
-          twiml.message('No weather alerts for your area');
+          return 'No weather alerts for your area';
         } else {
           var msg = ""
           for (let i = 0; i < weatherResponse.data.alerts.length; i++) {
             let alert = weatherResponse.data.alerts[i]
             msg = msg + i + ") " + alert.sender_name + " " + alert.event + " " + alert.start + "/" + alert.end + "\n"
           }
-          twiml.message(msg)
+          return msg
         }
-      } else if ( incomingMessage.startsWith('openweather sun') ) {
+      } else if ( messageIn.startsWith('openweather sun') ) {
         let sunrise = new Date(weatherResponse.data.current.sunrise);
         let sunset = new Date(weatherResponse.data.current.sunset);
-        twiml.message("Sunrise: " + sunrise.toString() + ", Sunset: " + sunset.toString())
+        return "Sunrise: " + sunrise.toString() + ", Sunset: " + sunset.toString()
       }
     }
     }
   } else {
-    twiml.message('Command not recognized, please use one of: debug, hello, bye, openweather sun, openweather alerts');
+    return 'Command not recognized, please use one of: debug, hello, bye, openweather sun, openweather alerts';
   }
-
-  // Return the TwiML as the second argument to `callback`
-  // This will render the response as XML in reply to the webhook request
-  return callback(null, twiml);
-};
+}

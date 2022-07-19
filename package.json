@@ -1,0 +1,18 @@
+{
+  "name": "twilio-boaty",
+  "version": "0.0.0",
+  "description": "The following app / code is deployed as a twillio beta service (serverless).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "dependencies": {
+    "@twilio/runtime-handler": "^1.2.1",
+    "axios": "^0.27.2",
+    "lodash": "^4.17.11",
+    "twilio": "^3.29.2",
+    "util": "^0.11.0",
+    "xmldom": "^0.1.27"
+  }
+}
