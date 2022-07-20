@@ -94,7 +94,7 @@ exports.work = async (context, messageIn) => {
       });
     if ( weatherResponse && weatherResponse.data ) {
       if ( messageIn.startsWith('openweather alerts') ) {
-        if (weatherResponse.data.alerts.length == 0) {
+        if (!weatherResponse.data.alerts || weatherResponse.data.alerts.length == 0) {
           return 'No weather alerts for your area';
         } else {
           var msg = ""
