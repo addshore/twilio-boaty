@@ -25,14 +25,16 @@ Extracted URL: inreachlink.com/3JXBF7Z, lat: 48.351141, lon: -4.546773 from the 
 
 #### sun
 
-Current and next day sun and moon infomation.
+Sun and moon infomation (rise, set and moon phase)
 
 For moon phase 0.5 indicates a full moon.
 
 ```
-Jul 19 (today): Sun: 06:36 -> 22:11, Moon (phase 0.71): 01:04 -> 13:34
-Jul 20: Sun: 06:38 -> 22:10, Moon (phase 0.71): 01:21 -> 14:46
+1) Jul 19 (today): Sun: 06:36 -> 22:11, Moon (phase 0.71): 01:04 -> 13:34
+2) Jul 20: Sun: 06:38 -> 22:10, Moon (phase 0.71): 01:21 -> 14:46
 ```
+
+You can request more days (up to 10) by adding a number to the command, such as `openweather sun 4`
 
 ### alerts
 

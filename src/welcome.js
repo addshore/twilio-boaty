@@ -102,15 +102,22 @@ exports.work = async (context, messageIn) => {
     
     // openweather sun / moon
     if ( messageIn.startsWith('openweather sun') || messageIn.startsWith('openweather moon') ) {
+      let dayMatcher = messageIn.match(/(sun|moon) (\d+)/);
+      let days = 2
+      if (dayMatcher != null) {
+        days = dayMatcher[2]
+        if(days > 10) {
+          // Don't allow more than 10 days (5 sms ish)
+          days = 10
+        }
+      }
       let tz = weatherResponse.data.timezone
-      let days = 2;
-      // TODO in the future, send 2 days per message?
       let sunString = "";
       for(let i = 0; i < days; i++) {
         if( i >= 1 ) {
           sunString = sunString + "\n"
         }
-        sunString = sunString + openweatherDate(tz, weatherResponse.data.daily[i].sunrise) + " : " +
+        sunString = sunString + (i+1) + ") " + openweatherDate(tz, weatherResponse.data.daily[i].sunrise) + " : " +
         "Sun: " + openweatherTime(tz, weatherResponse.data.daily[i].sunrise) + " > " + openweatherTime(tz, weatherResponse.data.daily[i].sunset) +
         ", Moon (phase " + weatherResponse.data.daily[i].moon_phase + "): " + openweatherTime(tz, weatherResponse.data.daily[i].moonrise) + " -> " + openweatherTime(tz, weatherResponse.data.daily[i].moonset)
       }
