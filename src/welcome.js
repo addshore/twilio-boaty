@@ -102,47 +102,19 @@ exports.work = async (context, messageIn) => {
     
     // openweather sun / moon
     if ( messageIn.startsWith('openweather sun') || messageIn.startsWith('openweather moon') ) {
-      var todaySunrise = new Date(0);
-      todaySunrise.setUTCSeconds(weatherResponse.data.daily[0].sunrise);
-      let todaySunset = new Date(0);
-      todaySunset.setUTCSeconds(weatherResponse.data.daily[0].sunset);
-
-      var todayMoonrise = new Date(0);
-      todayMoonrise.setUTCSeconds(weatherResponse.data.daily[0].moonrise);
-      let todayMoonset = new Date(0);
-      todayMoonset.setUTCSeconds(weatherResponse.data.daily[0].moonset);
-
-      var tomorrowSunrise = new Date(0);
-      tomorrowSunrise.setUTCSeconds(weatherResponse.data.daily[1].sunrise);
-      let tomorrowSunset = new Date(0);
-      tomorrowSunset.setUTCSeconds(weatherResponse.data.daily[1].sunset);
-
-      var tomorrowMoonrise = new Date(0);
-      tomorrowMoonrise.setUTCSeconds(weatherResponse.data.daily[1].moonrise);
-      let tomorrowMoonset = new Date(0);
-      tomorrowMoonset.setUTCSeconds(weatherResponse.data.daily[1].moonset);
-
-      let timeOptions = {
-        timeZone: weatherResponse.data.timezone,
-        hour12: false,
-        hour: '2-digit',
-        minute:'2-digit'
+      let tz = weatherResponse.data.timezone
+      let days = 2;
+      // TODO in the future, send 2 days per message?
+      let sunString = "";
+      for(let i = 0; i < days; i++) {
+        if( i >= 1 ) {
+          sunString = sunString + "\n"
+        }
+        sunString = sunString + openweatherDate(tz, weatherResponse.data.daily[i].sunrise) + " : " +
+        "Sun: " + openweatherTime(tz, weatherResponse.data.daily[i].sunrise) + " > " + openweatherTime(tz, weatherResponse.data.daily[i].sunset) +
+        ", Moon (phase " + weatherResponse.data.daily[i].moon_phase + "): " + openweatherTime(tz, weatherResponse.data.daily[i].moonrise) + " -> " + openweatherTime(tz, weatherResponse.data.daily[i].moonset)
       }
-
-      let dateOptions = {
-        timeZone: weatherResponse.data.timezone,
-        day: 'numeric',
-        month: 'short'
-      }
-
-      let sunMessage = todaySunrise.toLocaleDateString("en-US", dateOptions) + " (today): " +
-        "Sun: " + todaySunrise.toLocaleTimeString("en-US", timeOptions) + " > " + todaySunset.toLocaleTimeString("en-US", timeOptions) +
-        ", Moon (phase " + weatherResponse.data.daily[0].moon_phase + "): " + todayMoonrise.toLocaleTimeString("en-US", timeOptions) + " -> " + todayMoonset.toLocaleTimeString("en-US", timeOptions) +
-        "\n" +
-        tomorrowSunrise.toLocaleDateString("en-US", dateOptions) + ": " +
-        "Sun: " + tomorrowSunrise.toLocaleTimeString("en-US", timeOptions) + " > " + tomorrowSunset.toLocaleTimeString("en-US", timeOptions) +
-        ", Moon (phase " + weatherResponse.data.daily[0].moon_phase + "): " + tomorrowMoonrise.toLocaleTimeString("en-US", timeOptions) + " -> " + tomorrowMoonset.toLocaleTimeString("en-US", timeOptions);
-      responses.push(sunMessage)
+      responses.push(sunString)
       return responses
       }
   }
@@ -189,3 +161,28 @@ var inreachDataFromLink = async function ( link ) {
   }
 }
 // END Garmin InReach functions
+
+// START openweathermap functions
+let openweatherTime = function( timezone, utcSeconds ) {
+  let dateObject = new Date(0)
+  dateObject.setUTCSeconds(utcSeconds)
+  let timeOptions = {
+    timeZone: timezone,
+    hour12: false,
+    hour: '2-digit',
+    minute:'2-digit'
+  }
+  return dateObject.toLocaleTimeString("en-US", timeOptions)
+}
+
+let openweatherDate = function( timezone, utcSeconds ) {
+  let dateObject = new Date(0)
+  dateObject.setUTCSeconds(utcSeconds)
+  let dateOptions = {
+    timeZone: timezone,
+    day: 'numeric',
+    month: 'short'
+  }
+  return dateObject.toLocaleDateString("en-US", dateOptions)
+}
+// END openweathermap functions
