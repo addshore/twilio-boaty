@@ -47,7 +47,13 @@ No weather alerts for your area
 OR
 
 ```
-0) METEO-FRANCE Moderate thunderstorm warning 1658203200/1658289600
+1/1 METEO-FRANCE 1658203200 > 1658289600: Moderate thunderstorm warning.
+```
+
+You can also request long alerts (including full descriptions) using `openweather alerts long`
+
+```
+1/1 METEO-FRANCE 1658203200 > 1658289600: Moderate thunderstorm warning. Although rather usual in this region, locally or potentially dangerous phenomena are expected. (such as local winds, summer thunderstorms, rising streams or high waves)
 ```
 
 ## Development

@@ -87,12 +87,15 @@ exports.work = async (context, messageIn) => {
         responses.push('No weather alerts for your area');
         return responses
       } else {
-        var msg = ""
-        for (let i = 0; i < weatherResponse.data.alerts.length; i++) {
-          let alert = weatherResponse.data.alerts[i]
-          msg = msg + i + ") " + alert.sender_name + " " + alert.event + " " + alert.start + "/" + alert.end + "\n"
+        let totalAlerts = weatherResponse.data.alerts.length
+        for (let i = 0; i < totalAlerts; i++) {
+          let alertData = weatherResponse.data.alerts[i]
+          let alertString = (i+1) + "/" + totalAlerts + " " + alertData.sender_name + " " + alertData.start + " > " + alertData.end + ": " + alertData.event + "."
+          if (messageIn.startsWith('openweather alerts long')) {
+            alertString = alertString + " " + alertData.description
+          }
+          responses.push(alertString)
         }
-        responses.push(msg)
         return responses
       }
     }
@@ -133,11 +136,11 @@ exports.work = async (context, messageIn) => {
       }
 
       let sunMessage = todaySunrise.toLocaleDateString("en-US", dateOptions) + " (today): " +
-        "Sun: " + todaySunrise.toLocaleTimeString("en-US", timeOptions) + " -> " + todaySunset.toLocaleTimeString("en-US", timeOptions) +
+        "Sun: " + todaySunrise.toLocaleTimeString("en-US", timeOptions) + " > " + todaySunset.toLocaleTimeString("en-US", timeOptions) +
         ", Moon (phase " + weatherResponse.data.daily[0].moon_phase + "): " + todayMoonrise.toLocaleTimeString("en-US", timeOptions) + " -> " + todayMoonset.toLocaleTimeString("en-US", timeOptions) +
         "\n" +
         tomorrowSunrise.toLocaleDateString("en-US", dateOptions) + ": " +
-        "Sun: " + tomorrowSunrise.toLocaleTimeString("en-US", timeOptions) + " -> " + tomorrowSunset.toLocaleTimeString("en-US", timeOptions) +
+        "Sun: " + tomorrowSunrise.toLocaleTimeString("en-US", timeOptions) + " > " + tomorrowSunset.toLocaleTimeString("en-US", timeOptions) +
         ", Moon (phase " + weatherResponse.data.daily[0].moon_phase + "): " + tomorrowMoonrise.toLocaleTimeString("en-US", timeOptions) + " -> " + tomorrowMoonset.toLocaleTimeString("en-US", timeOptions);
       responses.push(sunMessage)
       return responses
