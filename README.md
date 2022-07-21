@@ -13,12 +13,6 @@ This can the be used as an SMS service via devices such as the Garmin InReach. (
 Hello, there!
 ```
 
-#### bye
-
-```
-Goodbye!
-```
-
 #### debug
 
 Infomation that was extracted from the inreach URL.
@@ -76,9 +70,8 @@ All commands can be run locally via the CLI.
 Examples:
 
 ```sh
-node index.js test
-node index.js bye
 node index.js hello
+node index.js openweather alerts inreachlink.com/3JXBF7Z
 node index.js openweather sun inreachlink.com/3JXBF7Z
 ```
 

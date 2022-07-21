@@ -1693,5 +1693,15 @@
       "pop": 0.09,
       "uvi": 8
     }
+  ],
+  "alerts": [
+    {
+      "sender_name": "METEO-FRANCE",
+      "event": "Moderate thunderstorm warning",
+      "start": 1658203200,
+      "end": 1658289600,
+      "description": "Although rather usual in this region, locally or potentially dangerous phenomena are expected. (such as local winds, summer thunderstorms, rising streams or high waves)",
+      "tags": {}
+    }
   ]
 }

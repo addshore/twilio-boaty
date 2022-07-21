@@ -1,0 +1,29 @@
+{
+  "lat": 48.3511,
+  "lon": -4.5468,
+  "timezone": "Europe/Paris",
+  "timezone_offset": 7200,
+  "current": {
+    "dt": 1658398155,
+    "sunrise": 1658378350,
+    "sunset": 1658434178,
+    "temp": 293.3,
+    "feels_like": 292.86,
+    "pressure": 1024,
+    "humidity": 57,
+    "dew_point": 284.52,
+    "uvi": 5.61,
+    "clouds": 75,
+    "visibility": 10000,
+    "wind_speed": 4.63,
+    "wind_deg": 20,
+    "weather": [
+      {
+        "id": 803,
+        "main": "Clouds",
+        "description": "broken clouds",
+        "icon": "04d"
+      }
+    ]
+  }
+}
