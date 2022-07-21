@@ -2,15 +2,17 @@ const axios = require('axios');
 
 exports.handler = async (context, event, callback) => {
   const twiml = new Twilio.twiml.MessagingResponse();
-
-  twiml.message(await exports.work(context, event.Body.toLowerCase()))
-
-  // Return the TwiML as the second argument to `callback`
-  // This will render the response as XML in reply to the webhook request
+  let responses = await exports.work(context, event.Body.toLowerCase())
+  // Send multiple messages (if required)
+  // https://www.twilio.com/docs/messaging/twiml?code-sample=code-send-two-messages&code-language=Node.js&code-sdk-version=3.x
+  responses.forEach( response => {
+    twiml.message(response)
+  })
   return callback(null, twiml);
 };
 
 exports.work = async (context, messageIn) => {
+  let responses = []
   // Set debug, if requested by the message
   const debug = messageIn.startsWith('debug')
   messageIn = messageIn.replace(/^debug ?/,'')
@@ -37,24 +39,26 @@ exports.work = async (context, messageIn) => {
   // Debugging a message, respond with the infomation extracted from the inReach link (or not)
   if ( debug ) {
     if( hasInreachLink && inreachData ) {
-      return 'Extracted URL: ' + inreachData.url + ', lat: ' + inreachData.lat + ', lon: ' + inreachData.lon + ' from the inReach URL'
+      responses.push('Debug: Extracted URL: ' + inreachData.url + ', lat: ' + inreachData.lat + ', lon: ' + inreachData.lon + ' from the inReach URL')
     } else if ( hasInreachLink ) {
-      return 'No data extracted from URL: ' + inreachLink
+      responses.push('Debug: No data extracted from URL: ' + inreachLink)
     } else {
-      return 'No inreach link detected'
+      responses.push('Debug: No inreach link detected')
     }
   }
 
   // Very basic hellow goodbye test commands
   if ( messageIn.startsWith('hello') ) {
-    return 'Hello, there!';
+    responses.push('Hello, there!');
+    return responses
   }
 
   // openweather
   if ( messageIn.startsWith('openweather') ) {
     // If we have no inreach link, tell the user to submit locations
     if ( !inreachData ) {
-      return "openweather requested, but no inreach link found. Please enable loction in your messages!"
+      responses.push("openweather requested, but no inreach link found. Please enable loction in your messages!")
+      return responses
     }
 
     // All open weather commands currently make use of the one-call-api, so make that request!
@@ -73,20 +77,23 @@ exports.work = async (context, messageIn) => {
         console.error(error);
       });
     if ( !weatherResponse || !weatherResponse.data ) {
-      return "Error retrieving weather infomation from openweathermap.org"
+      responses.push("Error retrieving weather infomation from openweathermap.org")
+      return responses
     }
 
     // openweather alerts
     if ( messageIn.startsWith('openweather alerts') ) {
       if (!weatherResponse.data.alerts || weatherResponse.data.alerts.length == 0) {
-        return 'No weather alerts for your area';
+        responses.push('No weather alerts for your area');
+        return responses
       } else {
         var msg = ""
         for (let i = 0; i < weatherResponse.data.alerts.length; i++) {
           let alert = weatherResponse.data.alerts[i]
           msg = msg + i + ") " + alert.sender_name + " " + alert.event + " " + alert.start + "/" + alert.end + "\n"
         }
-        return msg
+        responses.push(msg)
+        return responses
       }
     }
     
@@ -125,18 +132,20 @@ exports.work = async (context, messageIn) => {
         month: 'short'
       }
 
-      return todaySunrise.toLocaleDateString("en-US", dateOptions) + " (today): " +
+      let sunMessage = todaySunrise.toLocaleDateString("en-US", dateOptions) + " (today): " +
         "Sun: " + todaySunrise.toLocaleTimeString("en-US", timeOptions) + " -> " + todaySunset.toLocaleTimeString("en-US", timeOptions) +
         ", Moon (phase " + weatherResponse.data.daily[0].moon_phase + "): " + todayMoonrise.toLocaleTimeString("en-US", timeOptions) + " -> " + todayMoonset.toLocaleTimeString("en-US", timeOptions) +
         "\n" +
         tomorrowSunrise.toLocaleDateString("en-US", dateOptions) + ": " +
         "Sun: " + tomorrowSunrise.toLocaleTimeString("en-US", timeOptions) + " -> " + tomorrowSunset.toLocaleTimeString("en-US", timeOptions) +
         ", Moon (phase " + weatherResponse.data.daily[0].moon_phase + "): " + tomorrowMoonrise.toLocaleTimeString("en-US", timeOptions) + " -> " + tomorrowMoonset.toLocaleTimeString("en-US", timeOptions);
-
+      responses.push(sunMessage)
+      return responses
       }
   }
   
-  return 'Command not recognized, please use one of: hello, openweather alerts, openweather sun'
+  responses.push('Command not recognized, please use one of: hello, openweather alerts, openweather sun')
+  return responses
 }
 
 // START Garmin InReach functions

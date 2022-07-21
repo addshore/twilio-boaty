@@ -27,6 +27,7 @@ console.log("-----------------------------------")
 console.log("Attempting request...");
 console.log("Message: " + message);
 console.log("-----------------------------------");
+console.log("Message responses...");
 
 (async function () {
     try {
