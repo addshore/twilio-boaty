@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { round, floor } = require('lodash');
 const { ucs2 } = require('punycode');
 
 exports.handler = async (context, event, callback) => {
@@ -104,18 +105,10 @@ exports.work = async (context, messageIn) => {
     
     // openweather sun / moon
     if ( messageIn.startsWith('openweather sun') || messageIn.startsWith('openweather moon') ) {
-      let dayMatcher = messageIn.match(/(sun|moon) (\d+)/);
-      let days = 2
-      if (dayMatcher != null) {
-        days = dayMatcher[2]
-        if(days > 10) {
-          // Don't allow more than 10 days (5 sms ish)
-          days = 10
-        }
-      }
+      let entries = entriesForCommand(messageIn, 2, /openweather (sun|moon) (\d+)/, 2, 10)
       let tz = weatherResponse.data.timezone
       let sunString = "";
-      for(let i = 0; i < days; i++) {
+      for(let i = 0; i < entries; i++) {
         if( i >= 1 ) {
           sunString = sunString + "\n"
         }
@@ -126,9 +119,43 @@ exports.work = async (context, messageIn) => {
       responses.push(sunString)
       return responses
       }
+
+    // openweather wind (IN metre/sec)
+    if ( messageIn.startsWith('openweather wind') ) {
+      let entries = entriesForCommand(messageIn, 1, /openweather wind (\d+)/, 6, 50)
+      let openweatherForcastToWindString = function (timezone, forcast) {
+        let fString = openweatherDateTime(timezone, forcast.dt) + ": " + forcast.wind_speed
+        if ( forcast.wind_gust ) {
+          fString = fString + "(" + forcast.wind_gust + ")"
+        }
+        fString = fString
+        fString = fString + " " + degreesToDirection(forcast.wind_deg) + "(" + forcast.wind_deg + ")";
+        return fString
+      }
+      let entriesDone = 1
+      let lastDtReported = weatherResponse.data.current.dt
+      let windString = "Wind in m/s\n" + openweatherForcastToWindString(weatherResponse.data.timezone, weatherResponse.data.current)
+      for(let i = 0; ( i <= entries && entriesDone <= entries && weatherResponse.data.hourly[i] ); i++ ) {
+        if ( weatherResponse.data.hourly[i].dt < lastDtReported ){
+          continue;
+        }
+        windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone, weatherResponse.data.hourly[i]);
+        lastDtReported = weatherResponse.data.hourly[i].dt
+        entriesDone++
+      }
+      for(let i = 0; ( i <= entries && entriesDone <= entries && weatherResponse.data.daily[i] ); i++ ) {
+        if ( weatherResponse.data.daily[i].dt < lastDtReported ){
+          continue;
+        }
+        windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone, weatherResponse.data.daily[i]);
+        entriesDone++
+      }
+      responses.push(windString)
+      return responses
+    }
   }
   
-  responses.push('Command not recognized, please use one of: hello, openweather alerts, openweather sun')
+  responses.push('Command not recognized, please use one of: hello, openweather alerts, openweather sun, openweather wind')
   return responses
 }
 
@@ -199,3 +226,57 @@ let openweatherDateTime = function ( timezone, utcSeconds ) {
   return openweatherDate(timezone, utcSeconds) + " " + openweatherTime(timezone, utcSeconds)
 }
 // END openweathermap functions
+
+// START general functions
+
+/**
+ * Extract number of entries to return from a command
+ * @param {string} message to match from
+ * @param {int} matchGroup from the matcher to match
+ * @param {RegExp} matcher that has group 1 matching the number of entries
+ * @param {int} def the default entries to return
+ * @param {int} max maximum number of entries to return
+ * @returns int
+ */
+let entriesForCommand = function(message, matchGroup, matcher, def, max) {
+  let entryMatcher = message.match(matcher);
+  let entries = def
+  if (entryMatcher != null) {
+    entries = entryMatcher[matchGroup]
+    if(entries > max) {
+      // Don't allow more than the max number of entires
+      entries = max
+    }
+  }
+  return entries
+}
+
+let degreesToDirection = function (degrees) {
+  let sections = 8
+  let sectionDeg = 360 / sections
+  let sliceRaw = ( degrees + ( sectionDeg / 2) ) / sectionDeg;
+  let slice = floor(sliceRaw)
+
+  switch (slice) {
+    case 0:
+    case 8:
+      return "N"
+    case 1:
+      return "NE"
+    case 2:
+      return "E"
+    case 3:
+      return "SE"
+    case 4:
+      return "S"
+    case 5:
+      return "SW"
+    case 6:
+      return "W"
+    case 7:
+      return "NW"
+    default:
+      return "?s"
+  }
+}
+// END general functions

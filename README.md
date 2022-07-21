@@ -23,6 +23,24 @@ Extracted URL: inreachlink.com/3JXBF7Z, lat: 48.351141, lon: -4.546773 from the 
 
 ### openweather
 
+#### wind
+
+Wind forcase for current location
+
+```
+Wind in m/s
+Jul 21 12:09: 4.63 N(20)
+Jul 21 13:00: 4.15(4.72) NW(334)
+Jul 21 14:00: 4.92(5.36) N(341)
+...
+```
+
+Defaults to 6 hours of forcast.
+
+You can specify a number of entries to return to increase this, such as `openweather wind 24`
+
+Once hourly forcasts have run out, daily forcasts will be used.
+
 #### sun
 
 Sun and moon infomation (rise, set and moon phase)
