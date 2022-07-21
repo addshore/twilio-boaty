@@ -1,0 +1,501 @@
+
+<!DOCTYPE html>
+<html lang="en-US" dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width" />
+<title>inReach Message from Kathryn Crouchen</title>
+<link href="/css/main-dcde5337.css" rel="stylesheet" />
+<script src="/bundles/jquery.js?v=MwWMggR7Cp2jcHyRnvdTp2jX9WOKDOag1z8wXyyqn9c1"></script>
+<script src="/bundles/bootstrap.js?v=_-QACkScD7lXrOWNnzk8YXsuWbfH00TV5aoVyoPHAiI1"></script>
+<script src="/bundles/requirejs.js?v=EJGroTg98qoLB10D8J14JyTG7aywRKobgmS3_45K5Es1"></script>
+<input id="stringsResourceCont-c47e7082-8428-48ac-8a7f-36c769ee027a" name="stringsResourceCont" type="hidden" value="TextMessage" />
+<input id="stringsResourceCulture-0f6bbb6e-c6bc-4c9a-a5f7-f60ba6b83d97" name="stringsResourceCulture" type="hidden" value="en-US" />
+<input id="stringsResourceCurrencyCode-745bee59-737f-4389-ac7a-15ed4af8bee7" name="stringsResourceCurrencyCode" type="hidden" value="USD" />
+<input id="stringsResourceCurrencySymbol-58507689-1db7-4e3f-b3b0-9fb493bfdae4" name="stringsResourceCurrencySymbol" type="hidden" value="$" />
+<input id="stringsResourceOwnerId-76074270-ec32-47fd-b91a-fc6f192bd441" name="stringsResourceOwnerId" type="hidden" value="1" />
+<input id="stringsResourceUrl-9be953bf-e689-4b54-8783-610a2069ee31" name="stringsResourceUrl" type="hidden" value="/Resources?cont=TextMessage&amp;culture=en-US&amp;currencyCode=USD&amp;extrasNeeded=map&amp;ownerId=1&amp;v=1.0.72.4367" />
+<script>
+	require(['moment'], function (moment) {
+		$(document).ready(function () {
+			$('.iso-to-local-date').each(function (idx, elem) {
+				var isoDate = $(elem).html();
+				var momentDate = moment(isoDate);
+
+				$(elem).html(momentDate.format('L'));
+			});
+		});
+	});
+</script>
+<script>
+		if (document.location.href.toLowerCase().indexOf('.delorme.com') > -1) {
+			var url = document.location.href.toLowerCase().replace(/.*?:\/\//g, "");
+
+			if (!(url.indexOf('share') > -1)) {
+				var actionAndQuery = '';
+
+				if (url.indexOf('/') > -1) actionAndQuery = url.substring(url.indexOf('/'), url.length);
+				window.location = 'https://inreach.garmin.com' + actionAndQuery;
+			}
+		}
+	</script>
+<script type="text/javascript">
+	if (define !== undefined && requirejs !== undefined && requirejs.config !== undefined) {
+		var paths = {
+			leaflet: 'leaflet13/leaflet',
+			leafletLayerDeferred: 'leaflet/Layer.Deferred'
+		};
+		if (!jQuery) {
+			paths.jquery = 'jquery-1.7.2';
+		} else {
+			define('jquery', [], function () { return jQuery; });
+		}
+
+		requirejs.config({
+			baseUrl: '/Scripts/',
+			shim: {
+				'jquery': {
+					exports: 'jQuery'
+				},
+				'leaflet': {
+					exports: 'L'
+				},
+				'leafletLayerDeferred': {
+					deps: ['leaflet']
+				}
+			},
+			paths: paths,
+		});
+	}
+</script>
+<script type="text/javascript">
+    var UseRackspaceForTopo = false;
+    var TopoURL = 'https://topocache19.azureedge.net/';
+    var RoadURL = '';
+    var AerialU = '';
+    var NO_AUTO_LOAD = true;
+    var NO_POP_BUTTONS = true;
+    var NO_EXPAND = true;
+    require(['map-config'], function (mapConfig) {
+        mapConfig.configure({
+            Archived : false,
+            lat : 48.351141,
+            lon : -4.546773,
+            TopoURL : 'https://topocache19.azureedge.net/',
+            zoom: 10,
+            isEmptyLocation : false,
+            replyable : false,
+            UseRackspaceForTopo : false,
+            RefreshInt : 0,
+            units : 2,
+            coords : "DecimalDegrees",
+            data: {"L":48.351141,"N":-4.546773,"A":-3.73,"G":9.0700,"C":7,"D":"2022-07-19T09:07:30Z","S":3,"E":0,"T":5899610,"M":51931355,"X":"Openweather alerts","ET":13,"TL":"+447360497769","H":0},
+            FirstName: "Kathryn",
+            LastName: "Crouchen",
+            Google: true,
+            GoogleURL: "https://maps.google.com/maps/api/js?v=3&channel=explore&key=AIzaSyCBxomNjVMtCe6EKVRWws38QMHjDIsp0UU",
+            HereBaseURL: "",
+            HereAerialURL: "",
+            HereMapCountryCode: "",
+            mobile: false,
+            User : {"Id":586510,"AssignedDeviceId":null,"HasData":false,"MatchesCurrentFilter":true,"InField":false,"FirstName":"Kathryn","LastName":"Crouchen","TrackingStatus":false,"Locations":[{"L":48.3511428833008,"N":-4.54677295684814,"A":-12.0,"G":5.64,"C":7,"D":"2022-07-19T09:07:30Z","S":3,"T":null,"M":51931355,"X":"Openweather alerts","ET":null,"H":0}],"ColorCode":"#0055FF","GroupID":0,"LastSeenTime":null,"CanSendToDevice":true,"EnableLocate":false,"EnableMessage":false,"LocateRequestPending":false,"TrackRequestPending":false,"InSOS":false,"ShowSOSInMapshare":false,"EnableMapShare":false,"MapDisplayName":"Kathryn Crouchen","UpdateRowVersion":null},
+            Env:  "PROD",
+            IpIsLimitedCountry: false,
+            InMapShare: true,
+            InMessageReply: true,
+                
+                OSMURL: "https://osm18.azureedge.net/",
+                
+                    });
+    });
+    </script>
+
+<meta property="og:image" content="/Content/images/EarthaIconFacebook-200x200.jpg" />
+<script src="/bundles/txtReplyFull.js?v=jidrETVVPgBFJtSY0eaDwA5bS-z-dthRRqTi8GVm6Qg1"></script>
+<style>
+
+		.logo {
+			top: 13px;
+			left: 9px;
+		}
+
+		div .validation-summary-errors ul {
+			list-style: none;
+			margin-top: 75px;
+		}
+
+		.validation-summary-errors {
+			font-weight: normal !important;
+			color: '#d60000' !important;
+		}
+	</style>
+<meta property="og:image" content="https://eur.explore.garmin.com/Content/images/Explore_OpenGraph.png" />
+<meta property="og:title" content="Garmin Explore™" />
+<meta property="og:description" content="Manage your Garmin Explore or inReach account. With Explore and inReach, you can communicate, map, track, and share your trek from anywhere on Earth." />
+</head>
+<body class="ex-page_textMessage-full" style="height: 100%; width: 100%; margin: 0;">
+<div id="header" role="navigation">
+<a href="/Home/Index">
+<img height="30" width="170" src="/Content/images/Explore_Orange.svg" class="logo ex-header_logo" alt="Explore" />
+</a>
+<img height="40" src="/Content/images/Explore_Small.svg" class="logo ex-header_logo_small" alt="Explore" />
+<div id="logindisplay" class="ex-logonPartial">
+<div class="logonPartialContainer ex-logonPartial_container">
+<div id="logon-icon-row" class="ex-logonPartial_row">
+<div id="lone-lang-picker-container">
+<label for="ex-languagePicker" class="sr-only">Select a Language</label>
+<select id="ex-languagePicker" class="language-picker form-control form-control-sm" onchange="chooseLanguage(event)"></select>
+</div>
+</div>
+<div id="logon-help-flyover" class="logon-flyover">
+</div>
+<div id="legalInfoDialog" class="modal hide fade" role="dialog" style="display: none;text-align:left;">
+<div class="modal-dialog modal-dialog-centered" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<div class="modal-title">
+<h5>Legal Information</h5>
+</div>
+</div>
+<div class="modal-body">
+<a href="http://www.garmin.com/en-US/legal/inreach-data-sources" target="_blank">inReach Map Data Sources</a><br />
+<br />
+<div>
+<h5>Site Version</h5>
+<div style="font-size: 10px;">1.0.72.4367</div>
+</div>
+</div>
+<div class="modal-footer">
+<button id="legalCloseBtn" data-dismiss="modal" class="btn btn-outline-dark">Close</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script src="/bundles/logOnPartialPage.js?v=8qodpWn-uJ1aUhKfItIaJH1zMbsPeXujlOWTY2gjUFI1"></script>
+<script type="text/javascript">
+	require(['commonWidgetConfig', 'commonWidget'], function (commonWidgetConfig, commonWidget) {
+		commonWidgetConfig.configure({
+			allLangs:[{"CultureCode":"en-US","Name":"‭English (U.S.)","Current":false},{"CultureCode":"en-CA","Name":"‭English (Canada)","Current":false},{"CultureCode":"en-GB","Name":"‭English (U.K.)","Current":false},{"CultureCode":"en-IE","Name":"‭English (Ireland)","Current":false},{"CultureCode":"en-ZA","Name":"‭English (South Africa)","Current":false},{"CultureCode":"en-AU","Name":"‭English (Australia)","Current":false},{"CultureCode":"ms-MY","Name":"Bahasa Malaysia","Current":false},{"CultureCode":"id-ID","Name":"Bahasa Indonesia","Current":false},{"CultureCode":"bg-BG","Name":"Български","Current":false},{"CultureCode":"cs-CZ","Name":"Čeština","Current":false},{"CultureCode":"da-DK","Name":"Dansk","Current":false},{"CultureCode":"de-DE","Name":"‭Deutsch (Deutschland)","Current":false},{"CultureCode":"de-AT","Name":"‭Deutsch (Österreich)","Current":false},{"CultureCode":"de-CH","Name":"‭Deutsch (Schweiz)","Current":false},{"CultureCode":"el-GR","Name":"‭Ελληνικά","Current":false},{"CultureCode":"es-AR","Name":"‭Español (Argentina)","Current":false},{"CultureCode":"es-CL","Name":"‭Español (Chile)","Current":false},{"CultureCode":"es-MX","Name":"‭Español (México)","Current":false},{"CultureCode":"es-ES","Name":"‭Español (España)","Current":false},{"CultureCode":"es-US","Name":"‭Español (Estados Unidos)","Current":false},{"CultureCode":"fr-BE","Name":"‭Français (Belgique)","Current":false},{"CultureCode":"fr-CA","Name":"‭Français (Canada)","Current":false},{"CultureCode":"fr-FR","Name":"‭Français (France)","Current":false},{"CultureCode":"fr-CH","Name":"‭Français (Suisse)","Current":false},{"CultureCode":"hr-HR","Name":"‭Hrvatski","Current":false},{"CultureCode":"it-IT","Name":"‭Italiano (Italia)","Current":false},{"CultureCode":"it-CH","Name":"‭Italiano (Svizzera)","Current":false},{"CultureCode":"hu-HU","Name":"‭Magyar","Current":false},{"CultureCode":"nl-BE","Name":"‭Nederlands (België)","Current":false},{"CultureCode":"nl-NL","Name":"‭Nederlands (Nederland)","Current":false},{"CultureCode":"nb-NO","Name":"‭Norsk (bokmål)","Current":false},{"CultureCode":"pl-PL","Name":"Polski","Current":false},{"CultureCode":"pt-BR","Name":"‭Português (Brasil)","Current":false},{"CultureCode":"pt-PT","Name":"‭Português (Portugal)","Current":false},{"CultureCode":"ru-RU","Name":"Русский","Current":false},{"CultureCode":"fi-FI","Name":"Suomi","Current":false},{"CultureCode":"sk-SK","Name":"Slovenčina","Current":false},{"CultureCode":"sl-SI","Name":"Slovenščina","Current":false},{"CultureCode":"sv-SE","Name":"Svenska","Current":false},{"CultureCode":"vi-VN","Name":"Tiếng Việt","Current":false},{"CultureCode":"tr-TR","Name":"Türkçe","Current":false},{"CultureCode":"zh-CN","Name":"简体中文","Current":false},{"CultureCode":"th-TH","Name":"ไทย","Current":false},{"CultureCode":"ja-JP","Name":"日本語","Current":false},{"CultureCode":"ko-KR","Name":"한국어","Current":false},{"CultureCode":"zh-TW","Name":"正體中文","Current":false}],
+			currentLang: "en-US",
+			shouldHideStatusWidget: null,
+			isVisualUpdated: true,
+			isAuthenticated: false,
+			airdrop: false,
+			isShadmin: false,
+			legalInfoDialogTitle: 'Legal Information',
+			legalInfoDialogCloseText: 'Close'
+		});
+
+		commonWidget.completeMenu();
+	});
+
+</script></div>
+<h1 class="headerText mb-0">
+Kathryn Crouchen&#39;s Message and Location
+</h1>
+</div>
+<div id="divMain" role="main">
+<div id="nopoints" style="display: none;">
+<div>
+<strong>Location not available for this message.</strong>
+</div>
+</div>
+<div id="map" style="width: 100%; height: 100%;">
+</div>
+<div id="inreach-right-ad-container" role="article">
+<div id="inreach-right-ad" role="presentation">
+<div id="inreach-right-ad-color-splash"></div>
+<button id="inreach-right-ad-close" role="button" title="Close">&times;</button>
+<div id="inreach-right-ad-column" role="article">
+<div id="inreach-right-ad-text">Powered by inReach&#174; Satellite Technology</div>
+<a id="inreach-right-ad-learn-more" href="https://garmin.com/en-US/inreach" target="_blank" class="btn btn-light">Learn More</a>
+</div>
+<img id="inreach-right-ad-img" role="img" class="sixtySixi" src="/Content/images/Devices/GPSMap66iMapShare.png" alt="Learn More" />
+</div>
+</div>
+<script>
+    require(["ui/cookies"], function (cookies) {
+        let ad_key = "GarminExploreMap::ClosedAd";
+
+        function showAd() {
+            $('#inreach-right-ad-container').width(245);
+        }
+
+        function hideAd() {
+            $('#inreach-right-ad-container').width(0);
+            cookies.set(ad_key, "True", { expireDays: 7 })
+        }
+
+        $('#inreach-right-ad-close').click(hideAd)
+
+        $(document).ready(function () {
+            if (!cookies.get(ad_key))
+                setTimeout(showAd, 2000);
+        });
+    });
+</script>
+</div>
+<div id="divPopupTemplateContainer" style="display: none;">
+<style>
+	.paddedBubble { padding-left: 20px !important; padding-right: 20px !important; }
+</style>
+<div id="divPopupTemplate" class="" style="margin:-10px; padding-right:2px; padding-left:2px; min-width:180px;">
+<div style="padding-bottom:5px;">
+<div>
+<div style="float:right; margin-top: -1px;" data-bind="visible: showDeleteButton()">
+<img src="/content/images/Popup-Delete.png" alt="user popup delete" style="cursor:pointer" data-bind="click: popupDelete" data-test-id="UserPopupDelete" />
+</div>
+<div style="float:right;" data-bind="visible: (isTrackEditable() || isTrackEditableAdmin()) && !(editingTrack() || editingTrackColor())">
+<img src="/content/images/Popup-Edit.png" class="map-popup-edit-track-btn" data-bind="click: editTrack, attr: { title: strings.EXPLORE_EDIT_TRACK, 'alt': strings.EXPLORE_EDIT_TRACK }" data-test-id="EditTrackPopup" />
+</div>
+<div style="float:right;" data-bind="visible: isTrackEditable() && !editingTrack()">
+<span class="map-popup-add-to-collections-btn display-none glyphicon glyphicon-book" data-bind="click: addToCollections, attr: { title: strings.EXPLORE_ADD_TO_COLLECTIONS }" data-test-id="AddToCollectionTrackPopup" />
+</div>
+<div style="float:right;" data-bind="visible: (isTrackEditable() || isTrackEditableAdmin()) && (editingTrack() || editingTrackColor()) && !trackEditPending()">
+<img src="/content/images/Popup-DoneEditing.png" class="map-popup-save-edit-track-btn" data-bind="click: saveTrackEdit, attr: { title: strings.EXPLORE_SAVE_TRACK, 'alt': strings.EXPLORE_SAVE_TRACK }" data-test-id="SaveEditTrackPopup" />
+</div>
+<div style="float:right;" data-bind="visible: (isTrackEditable() || isTrackEditableAdmin()) && (editingTrack() || editingTrackColor()) && !trackEditPending()">
+<img src="/content/images/Popup-CancelEditing.png" data-test-id="CancelEditTrackPopup" class="map-popup-cancel-edit-track-btn" data-bind="click: cancelTrackEdit, attr: { title: strings.MAP_CANCEL_EDIT, 'alt': strings.MAP_CANCEL_EDIT }" />
+</div>
+<div style="float:right;" data-bind="visible: isTrackEditable() && editingTrack() && trackEditPending()">
+<img src="/content/images/ajax-loader-spin.gif" alt="" class="map-popup-cancel-edit-track-btn" data-bind="attr: { title: strings.COMMON_LOADING_ELLIPSIS, 'alt': strings.COMMON_LOADING_ELLIPSIS}" />
+</div>
+<div data-bind="text: displayName, attr: { title: displayName }" class="map-user-popup-displayname"></div>
+</div>
+<div style="ex-message_date">
+<span class="map-message-popup-date" data-bind="text:  messageDate"></span>
+<span class="map-message-popup-time" data-bind="text: messageTime"></span>
+</div>
+<div style="clear: both;"></div>
+<br />
+<div data-bind="if: messageToList()">
+<span class="message-recipient-line" data-bind="text: strings.EXPLORE_MESSAGES_TO + ' ' + messageToList()"></span>
+</div>
+<div data-bind="if: message()">
+<span class="map-message-popup-content" data-bind="text: message"></span>
+<br />
+</div>
+<div data-bind="if: trackName() && !editingTrack()">
+<p class="map-popup-track-details-p text-overflow-ellipsis gray">
+<b data-bind="text: strings.EXPLORE_TRACK_NAME + ': '"></b>
+<span data-bind="text: trackName, attr: { title: trackName }"></span>
+</p>
+</div>
+<div data-bind="if: trackName() && editingTrack()">
+<p class="map-popup-track-details-p">
+<b data-bind="text: strings.EXPLORE_TRACK_NAME + ': '"></b>
+<span class="map-track-popup-name-remaining" for="remainingChars" data-bind="text: remainingChars, attr: { title: strings.COMMON_CHARACTERS_REMAINING.format(remainingChars())}"></span>
+<input class="map-popup-track-name-input form-control form-control-sm" maxlength="100" data-bind="value: observableTrackName, valueUpdate:'keyup'" />
+</p>
+</div>
+<div data-bind="visible: Debug()==true">
+Id: <span data-bind="text: sourcePoint().Id"></span><br />
+Trail: <span data-bind="text: sourcePoint().T"></span>
+</div>
+</div>
+<div class="row no-gutters" data-bind="visible: displayMore" style="padding-bottom:10px;">
+<table class="col">
+<tbody>
+<tr style="white-space:nowrap">
+<td>
+<span class="map-track-popup-more-label">Speed: <span class="map-track-popup-more-data" data-bind="text: speed"></span>
+</td>
+<td style="padding-left:12px;">
+<span class="map-track-popup-more-label">Course: <span class="map-track-popup-more-data" data-bind="html: heading"></span>
+</td>
+</tr>
+<tr style="white-space:nowrap">
+<td>
+<span class="map-track-popup-more-label">Elevation: <span class="map-track-popup-more-data" data-bind="text: altitude"></span>
+</td>
+<td style="padding-left:12px;">
+<span class="map-track-popup-more-label" data-bind="visible: batt()!=''">Batt: <span class="map-track-popup-more-data" data-bind="text: batt"></span>
+</td>
+</tr>
+<tr style="white-space: nowrap" data-bind="visible: oneCoord()==false">
+<td>
+<span class="map-track-popup-more-label">Lat: <span class="map-track-popup-more-data" data-bind="text: lat"></span>
+</td>
+<td style="padding-left: 12px;">
+<span class="map-track-popup-more-label">Lon: <span class="map-track-popup-more-data" data-bind="text: lon"></span>
+</td>
+</tr>
+<tr style="white-space:nowrap">
+<td colspan="2" data-bind="visible: oneCoord()==true, text: coords()[0]" class="map-track-popup-more-label"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="row no-gutters flex-nowrap" style="text-align:center;">
+<div class="col">
+<span style="position:relative">
+<input type="image" alt="Activate tracking on this user&#39;s inReach." title="Activate tracking on this user&#39;s inReach." data-bind="click: showTrackingDlg, attr: { src: trackingButtonImage }, enable: userListBtnEnabled, visible: EnableTracking(), css: { paddedBubble: displayMore() == false }" />
+<span class="popupButtonText" data-bind="visible: displayMore() && EnableTracking()">Track</span>
+</span>
+</div>
+<div class="col mx-2">
+<span style="position:relative">
+<input type="image" alt="Send a message to this user." title="Send a message to this user." data-bind="click: showMessageDlg, attr: { src: messageButtonImage }, enable: userListBtnEnabled, visible:EnableMessage(), css: { paddedBubble: displayMore() == false }" />
+<span class="popupButtonText" data-bind="visible: displayMore() && EnableMessage()">Message</span>
+</span>
+</div>
+<div class="col">
+<span style="position:relative">
+<input type="image" alt="Request the location of this user." title="Request the location of this user." disabled="disabled" data-bind="click: showLocateDlg, attr: { src: locateButtonImage }, enable: userListBtnEnabled, visible:EnableLocate(), css: { paddedBubble: displayMore() == false }" />
+<span class="popupButtonText" data-bind="visible: displayMore() && EnableLocate()">Locate</span>
+</span>
+</div>
+</div>
+<div style="text-align:center; cursor:pointer;" data-bind="html: (displayMore() ? '&#x25BC; LESS &#x25BC;' : '&#x25B2; MORE &#x25B2;'), click: function () { displayMore() ? displayMore(false) : displayMore(true) }, style: { color: (displayMore() ? 'inherit' : '#0040FF') }">&#x25B2; MORE &#x25B2;</div>
+</div>
+</div>
+<script type="text/javascript">
+		    L_PREFER_CANVAS = true;
+
+		    var msgObj = {
+			    name: "Kathryn Crouchen",
+			    time: '7/19/2022 9:07:30 AM',
+			    text: "Openweather alerts",
+		    };
+
+            if (true && false) {
+                dragElement(document.getElementById("replyContainer"));
+
+                function dragElement(elmnt) {
+                    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                    document.getElementById(elmnt.id + "Header").onmousedown = dragMouseDown;
+
+                    function dragMouseDown(e) {
+                        e = e || window.event;
+                        e.preventDefault();
+                        pos3 = e.clientX;
+                        pos4 = e.clientY;
+                        document.onmouseup = closeDragElement;
+                        document.onmousemove = elementDrag;
+                    }
+
+                    function elementDrag(e) {
+                        e = e || window.event;
+                        e.preventDefault();
+                        pos1 = pos3 - e.clientX;
+                        pos2 = pos4 - e.clientY;
+                        pos3 = e.clientX;
+                        pos4 = e.clientY;
+                        elmnt.style.top = clamp(61, (elmnt.offsetTop - pos2), window.innerHeight - $(elmnt).height()) + "px";
+                        elmnt.style.left = clamp(0, (elmnt.offsetLeft - pos1), window.innerWidth - $(elmnt).width()) + "px";
+                    }
+
+                    function closeDragElement() {
+                        document.onmouseup = null;
+                        document.onmousemove = null;
+                    }
+
+                    function clamp(min, num, max) {
+                        return num <= min ? min : num >= max ? max : num;
+                    }
+
+                    $(window).resize(function () {
+                        elmnt.style.left = clamp(0, (elmnt.offsetLeft), window.innerWidth - $(elmnt).width() - 5) + "px";
+                    });
+                }
+            }
+
+		    $(document).ready(function() {
+			    resizeMap();
+			    $('.toggleReply').click(function() {
+				    var btn = this;
+                    $('.replyBody').slideToggle({
+                        duration: 200,
+                        complete: function() {
+                            if (true) {
+                                $(btn).html($('.replyBody').is(':visible') ?
+                                    '<span class="glyphicon glyphicon-chevron-down"><span class="sr-only">Toggle Message Reply</span></span>'
+                                    :
+                                    '<span class="glyphicon glyphicon-chevron-right"><span class="sr-only">Toggle Message Reply</span></span>')
+
+                            } else {
+                                $(btn).text($('.replyBody').is(':visible') ?
+                                    String(/'Hide Reply'/).substring(2).slice(0, -2)
+                                    :
+                                    String(/'Show Reply'/).substring(2).slice(0, -2));
+                            }
+                        },
+                        progress: function () {
+                            let ele = $('#replyContainer')
+                            if (ele.offset().top + ele.height() > window.innerHeight)
+                                ele.offset({ top: window.innerHeight - ele.height() })
+                        }
+                    });
+                });
+
+			    require(
+				    ['map-main-leaflet', 'map/controls/MappointView', 'TxtReplyCommon', 'map-config', 'knockout', 'leaflet', 'moment', 'leaflet.delorme.icons'],
+				    function(map, popup, replyCommon, config, ko) {
+					    map.getInstance().init('map');
+					    var temp = new popup();
+					    var loc = [config.lat, config.lon];
+
+					    var openPopup = function() {
+						    var mpv = new popup();
+						    var userInfo = {
+							    FirstName: ko.observable(config.FirstName),
+							    LastName: ko.observable(config.LastName),
+							    FullName: ko.observable(config.FirstName + ' ' + config.LastName),
+							    CanSendToDevice: ko.observable(config.User.CanSendToDevice),
+							    EnableLocate: function() {
+								    return false;
+							    },
+							    EnableMessage: function() {
+								    return false;
+							    }
+						    };
+						    mpv.model().sourcePoint(config.data);
+						    mpv.model().user(userInfo);
+						    mpv.display(new L.LatLng(config.lat, config.lon));
+					    };
+
+					    var marker = L.DeLorme.Icons.headcrumbMarker(parseInt(config.data.C * 22.5), loc, {
+						    'fillColor': '#0055FF',
+						    'clickHeadcrumb': openPopup,
+						    'source': config.data,
+						    'expandable': false,
+						    zIndexOffset: 1000
+					    });
+
+					    if (marker.bindTooltip) {
+						    marker.arrowFill.bindTooltip(config.FirstName + ' ' + config.LastName, {
+							    permanent: true,
+							    className: 'nameLabel',
+							    direction: 'bottom'
+						    })
+					    }
+
+					    if (!config.Archived && !config.isEmptyLocation) {
+						    marker.addTo(map.getInstance().pointLayer);
+						    setTimeout(openPopup, 500);
+
+						    map.provideMapCenteringFunctionality(
+							    function () { map.setCenter(config.lat, config.lon) },
+							    function() { return true; }
+						    );
+					    }
+					    replyCommon.init('+447360497769', '');
+				    });
+
+		    });
+
+		    $(window).resize(resizeMap);
+
+		    function resizeMap() {
+			    var $map = $('#map');
+			    var height = $(window).height();
+			    var top = $map.offset().top;
+                $map.height(height - top);
+		    }
+        </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v652eace1692a40cfa3763df669d7439c1639079717194" integrity="sha512-Gi7xpJR8tSkrpF7aordPZQlW2DLtzUlZcumS8dMQjwDHEnw9I7ZLyiOj/6tZStRBGtGgN6ceN6cMH8z7etPGlw==" data-cf-beacon='{"rayId":"72e323392fe57457","token":"db7717dc79e943f7a4060f0a6771638b","version":"2022.6.0","si":100}' crossorigin="anonymous"></script>
+</body>
+</html>

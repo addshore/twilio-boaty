@@ -62,12 +62,16 @@ The main entry point is `index.js` which imitates the behaviour of twilio with a
 
 Thus the main application is in `src/welcome.js` with a simple fallback handler of `src/fallback.js`.
 
+Mocking exists by default, you can find mock data in the `./mock` directory.
+In order to get coordinates, an `inreachlink.com` http call is made.
+Some commands then also make use of other services, such as openweathermap.org.
+
+The InReach link `inreachlink.com/3JXBF7Z` already has mock data added for it.
+So use this for testing pourposes.
+
 ### CLI
 
 All commands can be run locally via the CLI.
-
-Some commands require coordinates, which will be retrieved from the Garmin InReach link.
-You can use  inreachlink.com/3JXBF7Z which is a location in Brest, France for testing pourposes.
 
 Examples:
 
@@ -80,17 +84,6 @@ node index.js openweather sun inreachlink.com/3JXBF7Z
 
 etc...
 
-### Secrets / Context
-
-Currently openweathermap.org is the only service that requires akey.
-
-You can create an account at https://openweathermap.org/appid
-
-The key will be consumed from the `OPENWEATHERMAP_KEY` context variable.
-
-This MUST be set in a `context-private.json` file.
-You can use the `context-example.json` file as an example...
-
 ## Deployment
 
 This app is currently deployed to twilio by @addshore.
@@ -98,3 +91,5 @@ This app is currently deployed to twilio by @addshore.
 In order to deploy, simply copy the `fallback.js` and `welcome.js` file contents to their respective locations in the twilio UI.
 
 Hit `Save` and then hit `Deploy all`.
+
+You also need the `OPENWEATHERMAP_KEY` variable defined.

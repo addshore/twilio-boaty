@@ -86,7 +86,13 @@ exports.work = async (context, messageIn) => {
     } else {
     // https://openweathermap.org/api/one-call-api
     const weatherResponse = await axios
-      .get("https://api.openweathermap.org/data/2.5/onecall?lat=" + d.lat + "&lon=" + d.lon + "&appid=" + context.OPENWEATHERMAP_KEY)
+      .get("https://api.openweathermap.org/data/2.5/onecall", {
+        params: {
+          lat: d.lat,
+          lon: d.lon,
+          appid: context.OPENWEATHERMAP_KEY,
+        }
+      })
       .catch((error) => {
         // Be sure to handle any async errors, and return them in callback to end
         // Function execution if it makes sense for your application logic
