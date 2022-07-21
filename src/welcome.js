@@ -1,4 +1,5 @@
 const axios = require('axios');
+const { ucs2 } = require('punycode');
 
 exports.handler = async (context, event, callback) => {
   const twiml = new Twilio.twiml.MessagingResponse();
@@ -90,7 +91,8 @@ exports.work = async (context, messageIn) => {
         let totalAlerts = weatherResponse.data.alerts.length
         for (let i = 0; i < totalAlerts; i++) {
           let alertData = weatherResponse.data.alerts[i]
-          let alertString = (i+1) + "/" + totalAlerts + " " + alertData.sender_name + " " + alertData.start + " > " + alertData.end + ": " + alertData.event + "."
+          let tz = weatherResponse.data.timezone
+          let alertString = (i+1) + "/" + totalAlerts + " " + alertData.sender_name + " " + openweatherDateTime(tz, alertData.start) + " > " + openweatherDateTime(tz, alertData.end) + ": " + alertData.event + "."
           if (messageIn.startsWith('openweather alerts long')) {
             alertString = alertString + " " + alertData.description
           }
@@ -191,5 +193,9 @@ let openweatherDate = function( timezone, utcSeconds ) {
     month: 'short'
   }
   return dateObject.toLocaleDateString("en-US", dateOptions)
+}
+
+let openweatherDateTime = function ( timezone, utcSeconds ) {
+  return openweatherDate(timezone, utcSeconds) + " " + openweatherTime(timezone, utcSeconds)
 }
 // END openweathermap functions

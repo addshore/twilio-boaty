@@ -38,8 +38,6 @@ You can request more days (up to 10) by adding a number to the command, such as 
 
 ### alerts
 
-WORK IN PROGRESS (needs fixes such as times / dates & multiple messages for longer alerts)
-
 Responds with current weather alerts from open weather.
 
 ```
@@ -49,13 +47,13 @@ No weather alerts for your area
 OR
 
 ```
-1/1 METEO-FRANCE 1658203200 > 1658289600: Moderate thunderstorm warning.
+1/1 METEO-FRANCE Jul 19 06:00 > Jul 20 06:00: Moderate thunderstorm warning.
 ```
 
 You can also request long alerts (including full descriptions) using `openweather alerts long`
 
 ```
-1/1 METEO-FRANCE 1658203200 > 1658289600: Moderate thunderstorm warning. Although rather usual in this region, locally or potentially dangerous phenomena are expected. (such as local winds, summer thunderstorms, rising streams or high waves)
+1/1 METEO-FRANCE Jul 19 06:00 > Jul 20 06:00: Moderate thunderstorm warning. Although rather usual in this region, locally or potentially dangerous phenomena are expected. (such as local winds, summer thunderstorms, rising streams or high waves)
 ```
 
 ## Development
