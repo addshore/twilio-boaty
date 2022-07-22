@@ -36,11 +36,10 @@ Jul 21 15:00: 5.76(6.1) N(348)
 ...
 ```
 
-Defaults to 6 hours of forcast.
-
-You can specify a number of entries to return to increase this, such as `openweather wind 24`
-
+Defaults to looking at hourly and daily forcasts, returning 6 entries (6 hours).
+You can specify a number of entries to return by adding a number to the end of the message, such as `openweather wind 24`
 Once hourly forcasts have run out, daily forcasts will be used.
+You can also select to only have hourly or daily infomation with `openweather wind day 5` or `openweather wind hour 12`
 
 #### sun
 
