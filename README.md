@@ -28,11 +28,12 @@ Extracted URL: inreachlink.com/3JXBF7Z, lat: 48.351141, lon: -4.546773 from the 
 Wind forcase for current location
 
 ```
-DATE:WIND(GUST),DIR(DEG) m/s
-Jul 21 12:09: 4.63 N(20)
-Jul 21 13:00: 4.15(4.72) NW(334)
-Jul 21 14:00: 4.92(5.36) N(341)
-Jul 21 15:00: 5.76(6.1) N(348)
+DATEHOUR: WIND(GUST),DIR(DEG) m/s
+Jul 21
+12:09: 4.63N(20)
+13:00: 4.15(4.72)NW(334)
+14:00: 4.92(5.36)N(341)
+15:00: 5.76(6.1)N(348)
 ...
 ```
 

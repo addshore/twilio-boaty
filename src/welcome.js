@@ -127,6 +127,7 @@ exports.work = async (context, messageIn) => {
 
     // openweather wind (IN metre/sec)
     if ( messageIn.startsWith('openweather wind') ) {
+      // Collect user input
       // Default to hourly and then daily
       let useAll = true;
       let useHourly = messageIn.match(/openweather wind .*?(hour|hourly)/);
@@ -134,40 +135,66 @@ exports.work = async (context, messageIn) => {
       if (useHourly || useDaily) {
         useAll = false
       }
+      // Limit of 100 entries is ~ 10 messages
+      let entries = entriesForCommand(messageIn, 2, /openweather wind( [a-z]+)? (\d+)/, 6, 100)
 
-      let entries = entriesForCommand(messageIn, 2, /openweather wind( [a-z]+)? (\d+)/, 6, 50)
-      let openweatherForcastToWindString = function (timezone_offset, forcast) {
-        let fString = openweatherDateTime(timezone_offset, forcast.dt) + ": " + forcast.wind_speed
-        if ( forcast.wind_gust ) {
-          fString = fString + "(" + forcast.wind_gust + ")"
-        }
-        fString = fString
-        fString = fString + " " + degreesToDirection(forcast.wind_deg) + "(" + forcast.wind_deg + ")";
-        return fString
-      }
-      let entriesDone = 1
-      let lastDtReported = weatherResponse.data.current.dt
-      let windString = "DATE:WIND(GUST),DIR(DEG) m/s\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.current)
+      // Collect forcases to use
+      let forcastsToUse = []
+      weatherResponse.data.current.hourly = true
+      forcastsToUse.push(weatherResponse.data.current)
+      let lastDtCollected = weatherResponse.data.current.dt
       if(useAll || useHourly){
-        for(let i = 0; ( i <= entries && entriesDone <= entries && weatherResponse.data.hourly[i] ); i++ ) {
-          if ( weatherResponse.data.hourly[i].dt < lastDtReported ){
+        for(let i = 0; ( i <= entries && forcastsToUse.length < entries && weatherResponse.data.hourly[i] ); i++ ) {
+          if ( weatherResponse.data.hourly[i].dt < lastDtCollected ){
             continue;
           }
-          windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.hourly[i]);
-          lastDtReported = weatherResponse.data.hourly[i].dt
-          entriesDone++
+          weatherResponse.data.hourly[i].hourly = true
+          forcastsToUse.push(weatherResponse.data.hourly[i])
+          lastDtCollected = weatherResponse.data.hourly[i].dt
         }
       }
       if(useAll || useDaily){
-        for(let i = 0; ( i <= entries && entriesDone <= entries && weatherResponse.data.daily[i] ); i++ ) {
-          if ( weatherResponse.data.daily[i].dt < lastDtReported ){
+        for(let i = 0; ( i <= entries && forcastsToUse.length < entries && weatherResponse.data.daily[i] ); i++ ) {
+          if ( weatherResponse.data.daily[i].dt < lastDtCollected ){
             continue;
           }
-          windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.daily[i]);
-          entriesDone++
+          weatherResponse.data.daily[i].daily = true
+          forcastsToUse.push(weatherResponse.data.daily[i])
+          lastDtCollected = weatherResponse.data.daily[i].dt
         }
       }
-      return windString
+
+      // Build a response
+      let windHeader = "DATE\HOUR: WIND(GUST),DIR(DEG) m/s\n";
+      let windString = windHeader;
+      let lastDateOutput = "";
+      forcastsToUse.forEach( forcast => {
+        let date = openweatherDate(weatherResponse.data.timezone_offset, forcast.dt)
+        let time = openweatherTime(weatherResponse.data.timezone_offset, forcast.dt)
+        let speed = forcast.wind_speed
+        let gust = forcast.wind_gust
+        let degrees = forcast.wind_deg
+        let direction = degreesToDirection(degrees)
+
+        if(forcast.hourly){
+          if(lastDateOutput != date) {
+            windString = windString + date + "\n"
+            lastDateOutput = date
+          }
+          windString = windString + time + ": "
+        }
+        if(forcast.daily) {
+          windString = windString + date + ": "
+        }
+
+        windString = windString + speed
+        if ( gust ) {
+          windString = windString + "(" + gust + ")"
+        }
+        windString = windString + direction + "(" + degrees + ")\n"
+      })
+
+      return windString.trim()
     }
   }
   
@@ -237,8 +264,8 @@ let openweatherDate = function( timezoneOffset, utcSeconds ) {
   return dateObject.toLocaleDateString("en-US", dateOptions)
 }
 
-let openweatherDateTime = function ( timezone_offset, utcSeconds ) {
-  return openweatherDate(timezone_offset, utcSeconds) + " " + openweatherTime(timezone_offset, utcSeconds)
+let openweatherDateTime = function ( timezoneOffset, utcSeconds ) {
+  return openweatherDate(timezoneOffset, utcSeconds) + " " + openweatherTime(timezoneOffset, utcSeconds)
 }
 // END openweathermap functions
 
