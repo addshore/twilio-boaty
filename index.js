@@ -31,8 +31,11 @@ console.log("Message responses...");
 
 (async function () {
     try {
-        const { work: welcome } = require('./src/welcome.js')
-        console.log(await welcome(context, message))
+        const { innerHandler: welcome } = require('./src/welcome.js')
+        let responses = await welcome(context, message);
+        responses.forEach(element => {
+            console.log(element);
+        });
     } catch (err) {
         console.log(err)
         console.log('--------------------------------------------------')

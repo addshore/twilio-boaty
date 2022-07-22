@@ -1,20 +1,29 @@
 const axios = require('axios');
-const { round, floor } = require('lodash');
-const { ucs2 } = require('punycode');
+const { floor } = require('lodash');
 
 exports.handler = async (context, event, callback) => {
   const twiml = new Twilio.twiml.MessagingResponse();
-  let responses = await exports.work(context, event.Body.toLowerCase())
+  let messages = await exports.innerHandler(context, event.Body.toLowerCase())
   // Send multiple messages (if required)
   // https://www.twilio.com/docs/messaging/twiml?code-sample=code-send-two-messages&code-language=Node.js&code-sdk-version=3.x
-  responses.forEach( response => {
-    twiml.message(response)
+  messages.forEach( msg => {
+    twiml.message(msg)
   })
   return callback(null, twiml);
 };
 
+exports.innerHandler = async (context, messageIn) => {
+  let textResponse = await exports.work(context, messageIn)
+
+  // Send multiple messages (if required)
+  let msgs = []
+  stringToMessages(textResponse).forEach (msg => {
+    msgs.push(msg)
+  })
+  return msgs
+};
+
 exports.work = async (context, messageIn) => {
-  let responses = []
   // Set debug, if requested by the message
   const debug = messageIn.startsWith('debug')
   messageIn = messageIn.replace(/^debug ?/,'')
@@ -41,26 +50,24 @@ exports.work = async (context, messageIn) => {
   // Debugging a message, respond with the infomation extracted from the inReach link (or not)
   if ( debug ) {
     if( hasInreachLink && inreachData ) {
-      responses.push('Debug: Extracted URL: ' + inreachData.url + ', lat: ' + inreachData.lat + ', lon: ' + inreachData.lon + ' from the inReach URL')
+      return 'Debug: Extracted URL: ' + inreachData.url + ', lat: ' + inreachData.lat + ', lon: ' + inreachData.lon + ' from the inReach URL'
     } else if ( hasInreachLink ) {
-      responses.push('Debug: No data extracted from URL: ' + inreachLink)
+      return 'Debug: No data extracted from URL: ' + inreachLink
     } else {
-      responses.push('Debug: No inreach link detected')
+      return 'Debug: No inreach link detected'
     }
   }
 
   // Very basic hellow goodbye test commands
   if ( messageIn.startsWith('hello') ) {
-    responses.push('Hello, there!');
-    return responses
+    return 'Hello, there!'
   }
 
   // openweather
   if ( messageIn.startsWith('openweather') ) {
     // If we have no inreach link, tell the user to submit locations
     if ( !inreachData ) {
-      responses.push("openweather requested, but no inreach link found. Please enable loction in your messages!")
-      return responses
+      return "openweather requested, but no inreach link found. Please enable loction in your messages!"
     }
 
     // All open weather commands currently make use of the one-call-api, so make that request!
@@ -79,27 +86,26 @@ exports.work = async (context, messageIn) => {
         console.error(error);
       });
     if ( !weatherResponse || !weatherResponse.data ) {
-      responses.push("Error retrieving weather infomation from openweathermap.org")
-      return responses
+      return"Error retrieving weather infomation from openweathermap.org"
     }
 
     // openweather alerts
     if ( messageIn.startsWith('openweather alerts') ) {
       if (!weatherResponse.data.alerts || weatherResponse.data.alerts.length == 0) {
-        responses.push('No weather alerts for your area');
-        return responses
+        return'No weather alerts for your area'
       } else {
+        let alertsMessage = ""
         let totalAlerts = weatherResponse.data.alerts.length
         for (let i = 0; i < totalAlerts; i++) {
           let alertData = weatherResponse.data.alerts[i]
           let tz = weatherResponse.data.timezone_offset
-          let alertString = (i+1) + "/" + totalAlerts + " " + alertData.sender_name + " " + openweatherDateTime(tz, alertData.start) + " > " + openweatherDateTime(tz, alertData.end) + ": " + alertData.event + "."
+          let alertString = alertData.sender_name + " " + openweatherDateTime(tz, alertData.start) + " > " + openweatherDateTime(tz, alertData.end) + " " + alertData.event + "."
           if (messageIn.startsWith('openweather alerts long')) {
             alertString = alertString + " " + alertData.description
           }
-          responses.push(alertString)
+          alertsMessage = alertsMessage + alertString + "\n"
         }
-        return responses
+        return alertsMessage.trim()
       }
     }
     
@@ -107,18 +113,17 @@ exports.work = async (context, messageIn) => {
     if ( messageIn.startsWith('openweather sun') || messageIn.startsWith('openweather moon') ) {
       let entries = entriesForCommand(messageIn, 2, /openweather (sun|moon) (\d+)/, 2, 10)
       let tz = weatherResponse.data.timezone_offset
-      let sunString = "";
+      let sunString = "DATE,SUN,MOON(PHASE)\n";
       for(let i = 0; i < entries; i++) {
         if( i >= 1 ) {
           sunString = sunString + "\n"
         }
-        sunString = sunString + (i+1) + ") " + openweatherDate(tz, weatherResponse.data.daily[i].sunrise) + " : " +
-        "Sun: " + openweatherTime(tz, weatherResponse.data.daily[i].sunrise) + " > " + openweatherTime(tz, weatherResponse.data.daily[i].sunset) +
-        ", Moon (phase " + weatherResponse.data.daily[i].moon_phase + "): " + openweatherTime(tz, weatherResponse.data.daily[i].moonrise) + " -> " + openweatherTime(tz, weatherResponse.data.daily[i].moonset)
+        sunString = sunString + openweatherDate(tz, weatherResponse.data.daily[i].sunrise) + ":" +
+        openweatherTime(tz, weatherResponse.data.daily[i].sunrise) + ">" + openweatherTime(tz, weatherResponse.data.daily[i].sunset) +
+        "," + openweatherTime(tz, weatherResponse.data.daily[i].moonrise) + ">" + openweatherTime(tz, weatherResponse.data.daily[i].moonset) + "(" + weatherResponse.data.daily[i].moon_phase + ")"
       }
-      responses.push(sunString)
-      return responses
-      }
+      return sunString
+    }
 
     // openweather wind (IN metre/sec)
     if ( messageIn.startsWith('openweather wind') ) {
@@ -134,7 +139,7 @@ exports.work = async (context, messageIn) => {
       }
       let entriesDone = 1
       let lastDtReported = weatherResponse.data.current.dt
-      let windString = "Wind in m/s\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.current)
+      let windString = "DATE:WIND(GUST),DIR(DEG) m/s\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.current)
       for(let i = 0; ( i <= entries && entriesDone <= entries && weatherResponse.data.hourly[i] ); i++ ) {
         if ( weatherResponse.data.hourly[i].dt < lastDtReported ){
           continue;
@@ -150,13 +155,11 @@ exports.work = async (context, messageIn) => {
         windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.daily[i]);
         entriesDone++
       }
-      responses.push(windString)
-      return responses
+      return windString
     }
   }
   
-  responses.push('Command not recognized, please use one of: hello, openweather alerts, openweather sun, openweather wind')
-  return responses
+  return 'Command not recognized, please use one of: hello, openweather alerts, openweather sun, openweather wind'
 }
 
 // START Garmin InReach functions
@@ -228,6 +231,44 @@ let openweatherDateTime = function ( timezone_offset, utcSeconds ) {
 // END openweathermap functions
 
 // START general functions
+
+/**
+ * Splits a single big string which is easy for commands to return into messages appropriate for InReach
+ * Commands can use \n to split messages in places that make sense
+ * Otherwise they will be split just before the message boundry and paged
+ * @param {string} text
+ * @returns string[]
+ */
+let stringToMessages = function (text) {
+  let msgs = []
+  // 154 Number of characters that Garm InReach will actually send
+  let charsPerSingleMessage = 154
+  // 150 Allows adding "10/\n" to the statrt of messages to preserve order
+  let charsPerPagedMessage = charsPerSingleMessage - 4
+
+  // If its just gonna be 1 message, skip all of this logic
+  if (text.length <= charsPerSingleMessage) {
+    return [text]
+  }
+
+  while (text.length > charsPerPagedMessage) {
+    let nextSection = text.slice(0,charsPerPagedMessage)
+    // If we detected a new line, split it there (nicely)
+    let lastNewLine = nextSection.match(/\n.*?$/);
+    if (lastNewLine != null) {
+      nextSection = text.slice(0,lastNewLine.index + 1)
+    }
+    // Record the message, and remove it form the text we are looking at
+    msgs.push((msgs.length + 1) + "/\n" + nextSection.trim())
+    text = text.slice(nextSection.length)
+  }
+  // If we have characters left over, put them in the last message
+  if(text.length > 0) {
+    msgs.push((msgs.length + 1) + "/\n" + text.trim())
+  }
+
+  return msgs
+}
 
 /**
  * Extract number of entries to return from a command
