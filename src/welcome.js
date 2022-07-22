@@ -92,7 +92,7 @@ exports.work = async (context, messageIn) => {
         let totalAlerts = weatherResponse.data.alerts.length
         for (let i = 0; i < totalAlerts; i++) {
           let alertData = weatherResponse.data.alerts[i]
-          let tz = weatherResponse.data.timezone
+          let tz = weatherResponse.data.timezone_offset
           let alertString = (i+1) + "/" + totalAlerts + " " + alertData.sender_name + " " + openweatherDateTime(tz, alertData.start) + " > " + openweatherDateTime(tz, alertData.end) + ": " + alertData.event + "."
           if (messageIn.startsWith('openweather alerts long')) {
             alertString = alertString + " " + alertData.description
@@ -106,7 +106,7 @@ exports.work = async (context, messageIn) => {
     // openweather sun / moon
     if ( messageIn.startsWith('openweather sun') || messageIn.startsWith('openweather moon') ) {
       let entries = entriesForCommand(messageIn, 2, /openweather (sun|moon) (\d+)/, 2, 10)
-      let tz = weatherResponse.data.timezone
+      let tz = weatherResponse.data.timezone_offset
       let sunString = "";
       for(let i = 0; i < entries; i++) {
         if( i >= 1 ) {
@@ -123,8 +123,8 @@ exports.work = async (context, messageIn) => {
     // openweather wind (IN metre/sec)
     if ( messageIn.startsWith('openweather wind') ) {
       let entries = entriesForCommand(messageIn, 1, /openweather wind (\d+)/, 6, 50)
-      let openweatherForcastToWindString = function (timezone, forcast) {
-        let fString = openweatherDateTime(timezone, forcast.dt) + ": " + forcast.wind_speed
+      let openweatherForcastToWindString = function (timezone_offset, forcast) {
+        let fString = openweatherDateTime(timezone_offset, forcast.dt) + ": " + forcast.wind_speed
         if ( forcast.wind_gust ) {
           fString = fString + "(" + forcast.wind_gust + ")"
         }
@@ -134,12 +134,12 @@ exports.work = async (context, messageIn) => {
       }
       let entriesDone = 1
       let lastDtReported = weatherResponse.data.current.dt
-      let windString = "Wind in m/s\n" + openweatherForcastToWindString(weatherResponse.data.timezone, weatherResponse.data.current)
+      let windString = "Wind in m/s\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.current)
       for(let i = 0; ( i <= entries && entriesDone <= entries && weatherResponse.data.hourly[i] ); i++ ) {
         if ( weatherResponse.data.hourly[i].dt < lastDtReported ){
           continue;
         }
-        windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone, weatherResponse.data.hourly[i]);
+        windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.hourly[i]);
         lastDtReported = weatherResponse.data.hourly[i].dt
         entriesDone++
       }
@@ -147,7 +147,7 @@ exports.work = async (context, messageIn) => {
         if ( weatherResponse.data.daily[i].dt < lastDtReported ){
           continue;
         }
-        windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone, weatherResponse.data.daily[i]);
+        windString = windString + "\n" + openweatherForcastToWindString(weatherResponse.data.timezone_offset, weatherResponse.data.daily[i]);
         entriesDone++
       }
       responses.push(windString)
@@ -199,11 +199,11 @@ var inreachDataFromLink = async function ( link ) {
 // END Garmin InReach functions
 
 // START openweathermap functions
-let openweatherTime = function( timezone, utcSeconds ) {
+let openweatherTime = function( timezoneOffset, utcSeconds ) {
   let dateObject = new Date(0)
-  dateObject.setUTCSeconds(utcSeconds)
+  dateObject.setUTCSeconds(utcSeconds + timezoneOffset)
   let timeOptions = {
-    timeZone: timezone,
+    timeZone: "UTC",
     hour12: false,
     hour: '2-digit',
     minute:'2-digit'
@@ -211,19 +211,19 @@ let openweatherTime = function( timezone, utcSeconds ) {
   return dateObject.toLocaleTimeString("en-US", timeOptions)
 }
 
-let openweatherDate = function( timezone, utcSeconds ) {
+let openweatherDate = function( timezoneOffset, utcSeconds ) {
   let dateObject = new Date(0)
-  dateObject.setUTCSeconds(utcSeconds)
+  dateObject.setUTCSeconds(utcSeconds + timezoneOffset)
   let dateOptions = {
-    timeZone: timezone,
+    timeZone: "UTC",
     day: 'numeric',
     month: 'short'
   }
   return dateObject.toLocaleDateString("en-US", dateOptions)
 }
 
-let openweatherDateTime = function ( timezone, utcSeconds ) {
-  return openweatherDate(timezone, utcSeconds) + " " + openweatherTime(timezone, utcSeconds)
+let openweatherDateTime = function ( timezone_offset, utcSeconds ) {
+  return openweatherDate(timezone_offset, utcSeconds) + " " + openweatherTime(timezone_offset, utcSeconds)
 }
 // END openweathermap functions
 
