@@ -129,40 +129,20 @@ exports.work = async (context, messageIn) => {
     if ( messageIn.startsWith('openweather wind') ) {
       // Collect user input
       // Default to hourly and then daily
-      let useAll = true;
       let useHourly = messageIn.match(/openweather wind .*?(hour|hourly)/);
       let useDaily = messageIn.match(/openweather wind .*?(day|daily)/);
-      if (useHourly || useDaily) {
-        useAll = false
+      if (!useHourly && !useDaily) {
+        useHourly = true
+        useDaily = true
       }
-      // Limit of 100 entries is ~ 10 messages
-      let entries = entriesForCommand(messageIn, 2, /openweather wind( [a-z]+)? (\d+)/, 6, 100)
 
-      // Collect forcases to use
-      let forcastsToUse = []
-      weatherResponse.data.current.hourly = true
-      forcastsToUse.push(weatherResponse.data.current)
-      let lastDtCollected = weatherResponse.data.current.dt
-      if(useAll || useHourly){
-        for(let i = 0; ( i <= entries && forcastsToUse.length < entries && weatherResponse.data.hourly[i] ); i++ ) {
-          if ( weatherResponse.data.hourly[i].dt < lastDtCollected ){
-            continue;
-          }
-          weatherResponse.data.hourly[i].hourly = true
-          forcastsToUse.push(weatherResponse.data.hourly[i])
-          lastDtCollected = weatherResponse.data.hourly[i].dt
-        }
-      }
-      if(useAll || useDaily){
-        for(let i = 0; ( i <= entries && forcastsToUse.length < entries && weatherResponse.data.daily[i] ); i++ ) {
-          if ( weatherResponse.data.daily[i].dt < lastDtCollected ){
-            continue;
-          }
-          weatherResponse.data.daily[i].daily = true
-          forcastsToUse.push(weatherResponse.data.daily[i])
-          lastDtCollected = weatherResponse.data.daily[i].dt
-        }
-      }
+      let forcastsToUse = openWeatherCollectForcasts(
+        weatherResponse.data,
+        useHourly,
+        useDaily,
+        // Limit of 100 entries is ~ 10 messages
+        entriesForCommand(messageIn, 2, /openweather wind( [a-z]+)? (\d+)/, 6, 100)
+      )
 
       // Build a response
       let windHeader = "DATE\HOUR: WIND(GUST),DIR(DEG) m/s\n";
@@ -267,6 +247,36 @@ let openweatherDate = function( timezoneOffset, utcSeconds ) {
 let openweatherDateTime = function ( timezoneOffset, utcSeconds ) {
   return openweatherDate(timezoneOffset, utcSeconds) + " " + openweatherTime(timezoneOffset, utcSeconds)
 }
+
+let openWeatherCollectForcasts = function( weatherData, useHourly, useDaily, limit ) {
+  // Collect forcases to use
+  let forcasts = []
+  weatherData.current.hourly = true
+  forcasts.push(weatherData.current)
+  let lastDtCollected = weatherData.current.dt
+  if(useHourly){
+    for(let i = 0; ( i <= limit && forcasts.length < limit && weatherData.hourly[i] ); i++ ) {
+      if ( weatherData.hourly[i].dt < lastDtCollected ){
+        continue;
+      }
+      weatherData.hourly[i].hourly = true
+      forcasts.push(weatherData.hourly[i])
+      lastDtCollected = weatherData.hourly[i].dt
+    }
+  }
+  if(useDaily){
+    for(let i = 0; ( i <= limit && forcasts.length < limit && weatherData.daily[i] ); i++ ) {
+      if ( weatherData.daily[i].dt < lastDtCollected ){
+        continue;
+      }
+      weatherData.daily[i].daily = true
+      forcasts.push(weatherData.daily[i])
+      lastDtCollected = weatherData.daily[i].dt
+    }
+  }
+  return forcasts
+}
+
 // END openweathermap functions
 
 // START general functions
