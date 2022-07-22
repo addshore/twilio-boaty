@@ -145,8 +145,8 @@ exports.work = async (context, messageIn) => {
       )
 
       // Build a response
-      let windHeader = "DATE\HOUR: WIND(GUST),DIR(DEG) m/s\n";
-      let windString = windHeader;
+      let header = "DATE\HOUR: WIND(GUST),DIR(DEG) m/s\n";
+      let output = header;
       let lastDateOutput = "";
       forcastsToUse.forEach( forcast => {
         let date = openweatherDate(weatherResponse.data.timezone_offset, forcast.dt)
@@ -158,23 +158,65 @@ exports.work = async (context, messageIn) => {
 
         if(forcast.hourly){
           if(lastDateOutput != date) {
-            windString = windString + date + "\n"
+            output = output + date + "\n"
             lastDateOutput = date
           }
-          windString = windString + time + ": "
+          output = output + time + ": "
         }
         if(forcast.daily) {
-          windString = windString + date + ": "
+          output = output + date + ": "
         }
 
-        windString = windString + speed
+        output = output + speed
         if ( gust ) {
-          windString = windString + "(" + gust + ")"
+          output = output + "(" + gust + ")"
         }
-        windString = windString + direction + "(" + degrees + ")\n"
+        output = output + direction + "(" + degrees + ")\n"
       })
 
-      return windString.trim()
+      return output.trim()
+    }
+
+    // openweather temp (IN kelvin...)
+    if ( messageIn.startsWith('openweather temp') ) {
+      // Collect user input
+      // Default to hourly and then daily
+      let useHourly = messageIn.match(/openweather temp .*?(hour|hourly)/);
+      let useDaily = messageIn.match(/openweather temp .*?(day|daily)/);
+      if (!useHourly && !useDaily) {
+        useHourly = true
+        useDaily = true
+      }
+
+      let forcastsToUse = openWeatherCollectForcasts(
+        weatherResponse.data,
+        useHourly,
+        useDaily,
+        // Limit of 100 entries is ~ 10 messages
+        entriesForCommand(messageIn, 2, /openweather temp( [a-z]+)? (\d+)/, 6, 100)
+      )
+
+      // Build a response
+      let header = "DATE\HOUR:TEMP feels FEELING in kelvin\n";
+      let output = header;
+      let lastDateOutput = "";
+      forcastsToUse.forEach( forcast => {
+        let date = openweatherDate(weatherResponse.data.timezone_offset, forcast.dt)
+        let time = openweatherTime(weatherResponse.data.timezone_offset, forcast.dt)
+        if(forcast.hourly){
+          if(lastDateOutput != date) {
+            output = output + date + "\n"
+            lastDateOutput = date
+          }
+          output = output + time + ": " + forcast.temp + " feels " + forcast.feels_like + "\n"
+        }
+        if(forcast.daily) {
+          output = output + date + " "+ forcast.temp.min +">" + forcast.temp.max + " "
+          output = output + "morn:" + forcast.temp.morn + " day:" + forcast.temp.day + " eve:" + forcast.temp.eve + " night:" + forcast.temp.night + "\n"
+        }
+      })
+
+      return output.trim()
     }
   }
   
