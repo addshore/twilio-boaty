@@ -24,39 +24,51 @@ exports.innerHandler = async (context, messageIn) => {
 };
 
 exports.work = async (context, messageIn) => {
-  // Set debug, if requested by the message
+  let lat = null
+  let lon = null
+
+  // Set debug, if requested by the message, and strip it from the message continuing
   const debug = messageIn.startsWith('debug')
   messageIn = messageIn.replace(/^debug ?/,'')
   if (debug) {
     console.log("Debug: " + JSON.stringify(messageIn))
   }
 
-  // Extract data from an inReach link if it exists...
+  // Get coordinates from a user passwed option
+  const coordinateMatcher = messageIn.match(/(?:C|CO|CORD)(?: |,|:)? ?(-?\d+(?:\.\d+)?)(?: |,)?(-?\d+(?:\.\d+)?)/i)
+  if(coordinateMatcher) {
+    lat = coordinateMatcher[1]
+    lon = coordinateMatcher[2]
+    if (debug) {
+      console.log("Debug: Coords from argument: " + lat + " " + lon)
+    }
+  }
+
+  // Extract data from an inReach link if it exists and we don't have coordinates
   const hasInreachLink = messageIn.includes('inreachlink.com')
   var inreachData = false;
-  if (hasInreachLink) {
+  if (lat == null && lon == null && hasInreachLink) {
     var inreachLink = inreachMatchLink(messageIn)
     inreachData = await inreachDataFromLink(inreachLink)
+    if (inreachData) {
+      lat = inreachData.lat;
+      lon = inreachData.lon;
+    }
     if (debug) {
-      console.log("Debug: " + inreachLink)
-      console.log("Debug: " + JSON.stringify(inreachData))
+      console.log("Debug: Coords from Garmin InReach link " + inreachLink)
+      if( lat && lon ) {
+        return 'Debug: Extracted URL: ' + inreachData.url + ', lat: ' + lat + ', lon: ' + lon + ' from the Garmin InReach URL'
+      } else if ( hasInreachLink ) {
+        return 'Debug: No data extracted from URL: ' + inreachLink
+      } else {
+        return 'Debug: No Garmin InReach link detected'
+      }
     }
   }
 
   ////////////////////////////////////
   // Responses
   ////////////////////////////////////
-
-  // Debugging a message, respond with the infomation extracted from the inReach link (or not)
-  if ( debug ) {
-    if( hasInreachLink && inreachData ) {
-      return 'Debug: Extracted URL: ' + inreachData.url + ', lat: ' + inreachData.lat + ', lon: ' + inreachData.lon + ' from the inReach URL'
-    } else if ( hasInreachLink ) {
-      return 'Debug: No data extracted from URL: ' + inreachLink
-    } else {
-      return 'Debug: No inreach link detected'
-    }
-  }
 
   // Very basic hellow goodbye test commands
   if ( messageIn.startsWith('hello') ) {
@@ -65,9 +77,10 @@ exports.work = async (context, messageIn) => {
 
   // openweather
   if ( messageIn.startsWith('openweather') ) {
-    // If we have no inreach link, tell the user to submit locations
-    if ( !inreachData ) {
-      return "openweather requested, but no inreach link found. Please enable loction in your messages!"
+
+    // If we have no coordinates, tell the user to submit a location
+    if ( !lat || !lon ) {
+      return "openweather requested, but no location provided."
     }
 
     // All open weather commands currently make use of the one-call-api, so make that request!

@@ -23,9 +23,20 @@ Extracted URL: inreachlink.com/3JXBF7Z, lat: 48.351141, lon: -4.546773 from the 
 
 ### openweather
 
+openweather commands require location to be provided.
+For the Garmin InReach this will be extracted from the provided URL if you enable location.
+
+You can also provide coordinates manually that will overrride the Garmin InReach link to check other locations, or use other devices.
+
+```
+open weather <command> CORD: 48.35,-4.54
+```
+
+Aliases also exist for `CORD`. You can use `CO` or `C`.
+
 #### wind
 
-Wind forcase for current location
+Wind forcast for current location
 
 ```
 DATEHOUR: WIND(GUST),DIR(DEG) m/s
