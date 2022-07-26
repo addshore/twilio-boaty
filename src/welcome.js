@@ -88,8 +88,8 @@ exports.work = async (context, messageIn) => {
     const weatherResponse = await axios
       .get("https://api.openweathermap.org/data/2.5/onecall", {
         params: {
-          lat: inreachData.lat,
-          lon: inreachData.lon,
+          lat: lat,
+          lon: lon,
           appid: context.OPENWEATHERMAP_KEY,
         }
       })
