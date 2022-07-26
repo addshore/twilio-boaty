@@ -94,12 +94,28 @@ The main entry point is `index.js` which imitates the behaviour of twilio with a
 
 Thus the main application is in `src/welcome.js` with a simple fallback handler of `src/fallback.js`.
 
-Mocking exists by default, you can find mock data in the `./mock` directory.
-In order to get coordinates, an `inreachlink.com` http call is made.
-Some commands then also make use of other services, such as openweathermap.org.
+### Mocking calls
+
+Some commands then also make use of other services, such as openweathermap.org, or Garmin InReach.
+
+You can mock calls with some example data by passing `BOATY_MOCK=1` before your command.
+
+You can find mock data in the `./mock` directory.
+
+Coordniates can be provided as an argument to the command, or from a Garmin InReach link.
 
 The InReach link `inreachlink.com/3JXBF7Z` already has mock data added for it.
-So use this for testing pourposes.
+So use this for testing.
+
+### Using real calls
+
+Currently the one service you would need to provide a key for is openweathermap.org
+
+Right now it is not supported in the development version, but would be easily added.
+
+See the top of `index.js` `const context = {}`
+
+`context.OPENWEATHERMAP_KEY` must be set.
 
 ### CLI
 
