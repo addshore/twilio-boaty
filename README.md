@@ -111,11 +111,7 @@ So use this for testing.
 
 Currently the one service you would need to provide a key for is openweathermap.org
 
-Right now it is not supported in the development version, but would be easily added.
-
-See the top of `index.js` `const context = {}`
-
-`context.OPENWEATHERMAP_KEY` must be set.
+You can provide the key to the application by copying `context-example.json` to `context-private.json` and entering the key there.
 
 ### CLI
 

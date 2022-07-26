@@ -1,7 +1,13 @@
 const message = process.argv.slice(2).join(" ");
 
+var fs = require('fs');
+
 // Context can be empty as we mock all requests
-const context = {}
+let context = {}
+if ( fs.statSync("./context-private.json") ) {
+    context = require("./context-private.json")
+}
+
 
 if( process.env['BOATY_MOCK'] == 1 ) {
     // Setup an axious mock
@@ -10,7 +16,6 @@ if( process.env['BOATY_MOCK'] == 1 ) {
     var MockAdapter = require("axios-mock-adapter");
     var mock = new MockAdapter(axios);
 
-    var fs = require('fs');
     var mockDirectories = fs.readdirSync('./mock/');
     console.log("-----------------------------------")
     console.log("Loading mock data...")
