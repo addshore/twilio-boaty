@@ -158,14 +158,14 @@ exports.work = async (context, messageIn) => {
       )
 
       // Build a response
-      let header = "DATE\HOUR: WIND(GUST),DIR(DEG) m/s\n";
+      let header = "DATE\HOUR: WIND(GUST),DIR(DEG) knots\n";
       let output = header;
       let lastDateOutput = "";
       forcastsToUse.forEach( forcast => {
         let date = openweatherDate(weatherResponse.data.timezone_offset, forcast.dt)
         let time = openweatherTime(weatherResponse.data.timezone_offset, forcast.dt)
-        let speed = forcast.wind_speed
-        let gust = forcast.wind_gust
+        let speed = (Math.round(forcast.wind_speed * 1.944))
+        let gust = (Math.round(forcast.wind_gust * 1.944))
         let degrees = forcast.wind_deg
         let direction = degreesToDirection(degrees)
 
