@@ -210,7 +210,7 @@ exports.work = async (context, messageIn) => {
       )
 
       // Build a response
-      let header = "DATE\HOUR:TEMP feels FEELING in kelvin\n";
+      let header = "DATE\HOUR:TEMP feels FEELING in Celsius\n";
       let output = header;
       let lastDateOutput = "";
       forcastsToUse.forEach( forcast => {
@@ -221,11 +221,11 @@ exports.work = async (context, messageIn) => {
             output = output + date + "\n"
             lastDateOutput = date
           }
-          output = output + time + ": " + forcast.temp + " feels " + forcast.feels_like + "\n"
+          output = output + time + ": " + (Math.round(forcast.temp-273.15)) + " feels " + (Math.round(forcast.feels_like-273.15)) + "\n"
         }
         if(forcast.daily) {
-          output = output + date + " "+ forcast.temp.min +">" + forcast.temp.max + " "
-          output = output + "morn:" + forcast.temp.morn + " day:" + forcast.temp.day + " eve:" + forcast.temp.eve + " night:" + forcast.temp.night + "\n"
+          output = output + date + " "+ (Math.round(forcast.temp.min-273.15)) +">" + (Math.round(forcast.temp.max-273.15)) + " "
+          output = output + "morn:" + (Math.round(forcast.temp.morn-273.15)) + " day:" + (Math.round(forcast.temp.day-273.15)) + " eve:" + (Math.round(forcast.temp.eve-273.15)) + " night:" + (Math.round(forcast.temp.night-273.15)) + "\n"
         }
       })
 
