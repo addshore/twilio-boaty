@@ -3,12 +3,24 @@ const { floor } = require('lodash');
 
 exports.handler = async (context, event, callback) => {
   const twiml = new Twilio.twiml.MessagingResponse();
-  let messages = await exports.innerHandler(context, event.Body.toLowerCase())
+
+  let messages = [];
+  try {
+    messages = await exports.innerHandler(context, event.Body.toLowerCase())
+  } catch (error) {
+    return callback(error, null)
+  }
+
   // Send multiple messages (if required)
   // https://www.twilio.com/docs/messaging/twiml?code-sample=code-send-two-messages&code-language=Node.js&code-sdk-version=3.x
-  messages.forEach( msg => {
-    twiml.message(msg)
-  })
+  try {
+    messages.forEach( msg => {
+      twiml.message(msg)
+    })
+  } catch (error) {
+    return callback(error, null)
+  }
+
   return callback(null, twiml);
 };
 
@@ -244,9 +256,7 @@ var inreachDataFromLink = async function ( link ) {
   let response = await axios
   .get("https://" + link)
   .catch((error) => {
-    // Be sure to handle any async errors, and return them in callback to end
-    // Function execution if it makes sense for your application logic
-    console.error(error);
+    throw error;
   });
 
   if ( !response || !response.data ) {
